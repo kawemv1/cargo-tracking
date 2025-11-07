@@ -1,21 +1,10 @@
 // frontend/src/main.js
 
-const AUTH_TOKEN = localStorage.getItem('access_token');
-const USER_DATA = JSON.parse(localStorage.getItem('user_data') || '{}');
+// ✅ Объявляем переменные, но НЕ проверяем токен здесь
+let AUTH_TOKEN;
+let USER_DATA;
+let USER_CODE;
 
-console.log('🔐 DEBUG: Token =', AUTH_TOKEN);
-console.log('👤 DEBUG: User =', USER_DATA);
-
-// Check authentication on page load
-if (!AUTH_TOKEN) {
-    console.log('❌ No token, redirecting to login...');
-    window.location.href = '/login';
-} else {
-    console.log('✅ Token found, continuing...');
-}
-
-const USER_CODE = USER_DATA.personal_code || "106";
-console.log('🔢 User Code:', USER_CODE);
 // === DOM ELEMENTS ===
 const PARCELS_LIST = document.getElementById("parcels-list");
 const ADD_BTN = document.getElementById("add-btn");
@@ -31,11 +20,21 @@ const SEARCH_RESULT_CONTAINER = document.getElementById("search-result-container
 const USER_PARCELS_CARD = document.getElementById("user-parcels-card");
 
 // === AUTHENTICATED FETCH HELPER ===
+// === AUTHENTICATED FETCH HELPER ===
 async function authFetch(url, options = {}) {
+    const headers = {
+        'Authorization': `Bearer ${AUTH_TOKEN}`
+    };
+    
+    // Добавляем Content-Type только если это JSON
+    if (options.body && typeof options.body === 'string') {
+        headers['Content-Type'] = 'application/json';
+    }
+    
+    // Объединяем с пользовательскими headers
     options.headers = {
-        ...options.headers,
-        'Authorization': `Bearer ${AUTH_TOKEN}`,
-        'Content-Type': 'application/json'
+        ...headers,
+        ...options.headers
     };
     
     const response = await fetch(url, options);
@@ -50,10 +49,6 @@ async function authFetch(url, options = {}) {
 }
 
 // === RENDER FUNCTIONS ===
-
-/**
- * Generates HTML for one timeline status item.
- */
 function renderStatusItem(event) {
     const isCompleted = event.completed;
     const iconClass = isCompleted ? "completed" : "pending";
@@ -72,9 +67,6 @@ function renderStatusItem(event) {
     `;
 }
 
-/**
- * Generates HTML card for a track.
- */
 function renderTrackCard(track, isSearchResult = false) {
     const headerClass = isSearchResult ? "track-header search-result" : "track-header";
     
@@ -110,80 +102,112 @@ function renderTrackCard(track, isSearchResult = false) {
 }
 
 // === DATA LOADING FUNCTIONS ===
-
-/**
- * Loads and displays user's tracks.
- */
 async function loadUserTracks() {
+    if (!PARCELS_LIST) {
+        console.error('PARCELS_LIST element not found');
+        return;
+    }
+    
     PARCELS_LIST.innerHTML = `<p class="no-tracks-text">Загружаю ваши треки...</p>`;
     USER_PARCELS_CARD.style.display = 'block';
     SEARCH_RESULT_CARD.style.display = 'none';
 
     try {
-        const res = await authFetch(`/api/users/${USER_CODE}/tracks`);
-        if (!res.ok) throw new Error("Ошибка загрузки треков");
+        const encodedUserCode = encodeURIComponent(USER_CODE);
+        console.log('📦 Loading tracks for:', USER_CODE);
+        
+        const res = await authFetch(`/api/users/${encodedUserCode}/tracks`);
+        
+        if (!res.ok) {
+            console.error('❌ Failed to load tracks, status:', res.status);
+            // Показываем пустой список вместо ошибки
+            PARCELS_LIST.innerHTML = `
+                <p class="no-tracks-text">
+                    📦 У вас пока нет треков.<br>
+                    Нажмите кнопку "Добавить" чтобы начать отслеживание посылок.
+                </p>
+            `;
+            return;
+        }
         
         const tracks = await res.json();
+        console.log('✅ Loaded tracks:', tracks.length);
 
-        if (tracks.length === 0) {
-            PARCELS_LIST.innerHTML = `<p class="no-tracks-text">У вас нет привязанных треков. Нажмите "Добавить", чтобы начать отслеживание.</p>`;
+        if (!Array.isArray(tracks) || tracks.length === 0) {
+            PARCELS_LIST.innerHTML = `
+                <p class="no-tracks-text">
+                    📦 У вас нет привязанных треков.<br>
+                    Нажмите "Добавить", чтобы начать отслеживание.
+                </p>
+            `;
         } else {
             PARCELS_LIST.innerHTML = tracks.map(t => renderTrackCard(t, false)).join('');
         }
     } catch (error) {
-        console.error("Ошибка при загрузке треков пользователя:", error);
-        PARCELS_LIST.innerHTML = `<p class="no-tracks-text text-danger">Не удалось загрузить данные. ❌</p>`;
+        console.error("❌ Error loading tracks:", error);
+        // Показываем дружелюбное сообщение вместо ошибки
+        PARCELS_LIST.innerHTML = `
+            <p class="no-tracks-text">
+                📦 У вас пока нет треков.<br>
+                Нажмите кнопку "Добавить" чтобы начать отслеживание посылок.
+            </p>
+        `;
     }
 }
 
-// === MODAL FUNCTIONS ===
 
-/**
- * Opens modal for adding track.
- */
+
+// === MODAL FUNCTIONS ===
 function openTrackModal() {
     TRACK_NUMBER_INPUT.value = '';
     MODAL_MESSAGE.textContent = '';
     TRACK_MODAL.style.display = 'flex';
 }
 
-/**
- * Closes track modal.
- */
 function closeTrackModal() {
     TRACK_MODAL.style.display = 'none';
 }
 
-/**
- * Handles track submission.
- */
 async function handleSubmitTrack() {
     const trackNumber = TRACK_NUMBER_INPUT.value.trim().toUpperCase();
+    const description = document.getElementById('track-description-input')?.value.trim() || '';
     MODAL_MESSAGE.textContent = '';
 
+    console.log('🔹 [ADD_TRACK] Starting...', trackNumber);
+
     if (!trackNumber) {
-        MODAL_MESSAGE.textContent = "Введите, пожалуйста, трек-номер.";
+        MODAL_MESSAGE.textContent = "⚠️ Введите трек-номер.";
+        return;
+    }
+    
+    if (trackNumber.length < 3) {
+        MODAL_MESSAGE.textContent = "⚠️ Трек-номер должен быть минимум 3 символа.";
         return;
     }
 
     SUBMIT_TRACK_BTN.disabled = true;
+    console.log('📦 [ADD_TRACK] Sending request for:', trackNumber);
 
     try {
         const res = await authFetch("/api/tracks/assign", {
             method: "POST",
             body: JSON.stringify({
                 track_number: trackNumber,
-                personal_code: USER_CODE
+                personal_code: USER_CODE,
+                description: description || null
             })
         });
 
+        console.log('✅ [ADD_TRACK] Response status:', res.status);
         const data = await res.json();
+        console.log('✅ [ADD_TRACK] Response data:', data);
 
         if (res.ok) {
             MODAL_MESSAGE.textContent = "✅ Трек успешно добавлен к вашему списку!";
             MODAL_MESSAGE.style.color = "green";
             setTimeout(() => {
                 closeTrackModal();
+                console.log('🔄 [ADD_TRACK] Reloading tracks...');
                 loadUserTracks(); 
             }, 1500);
         } else {
@@ -192,7 +216,7 @@ async function handleSubmitTrack() {
         }
 
     } catch (error) {
-        console.error("Network error during track assignment:", error);
+        console.error("❌ [ADD_TRACK] Network error:", error);
         MODAL_MESSAGE.textContent = "❌ Ошибка сети. Проверьте подключение.";
         MODAL_MESSAGE.style.color = "red";
     } finally {
@@ -200,11 +224,9 @@ async function handleSubmitTrack() {
     }
 }
 
-// === SEARCH FUNCTIONS ===
 
-/**
- * Searches for a track by number.
- */
+
+// === SEARCH FUNCTIONS ===
 async function handleTrackSearch(trackNumber) {
     if (!trackNumber) {
         USER_PARCELS_CARD.style.display = 'block';
@@ -217,7 +239,6 @@ async function handleTrackSearch(trackNumber) {
     SEARCH_RESULT_CARD.style.display = 'block';
 
     try {
-        // Public search doesn't require auth
         const res = await fetch(`/api/tracks/search/${trackNumber.toUpperCase()}`);
         const data = await res.json();
 
@@ -239,14 +260,37 @@ async function handleTrackSearch(trackNumber) {
 }
 
 // === INITIALIZATION ===
-
 document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ DELTA CARGO User Panel загружен");
+    
+    // ✅ ПРОВЕРКА ТОКЕНА ЗДЕСЬ, ВНУТРИ DOMContentLoaded
+    AUTH_TOKEN = localStorage.getItem('token');
+    USER_DATA = JSON.parse(localStorage.getItem('user_data') || '{}');
+    
+    console.log('🔐 DEBUG: Token =', AUTH_TOKEN);
+    console.log('👤 DEBUG: User =', USER_DATA);
+    
+    if (!AUTH_TOKEN) {
+        console.log('❌ No token, redirecting to login...');
+        window.location.href = '/login';
+        return;
+    }
+    
+    console.log('✅ Token found, continuing...');
+    
+    USER_CODE = USER_DATA.personal_code || USER_DATA.email || "guest";
+    console.log('🔢 User Code:', USER_CODE);
     
     // Update user code display
     const userCodeElement = document.getElementById('user-code');
     if (userCodeElement && USER_DATA.personal_code) {
         userCodeElement.textContent = USER_DATA.personal_code;
+    }
+    
+    // Update user name in header
+    const userNameElement = document.getElementById('user-name');
+    if (userNameElement && USER_DATA.name) {
+        userNameElement.textContent = USER_DATA.name;
     }
     
     // Add logout functionality
@@ -260,9 +304,9 @@ document.addEventListener("DOMContentLoaded", () => {
     loadUserTracks();
 
     // Modal handlers
-    ADD_BTN.addEventListener('click', openTrackModal);
-    MODAL_CLOSE_BTN.addEventListener('click', closeTrackModal);
-    SUBMIT_TRACK_BTN.addEventListener('click', handleSubmitTrack);
+    ADD_BTN?.addEventListener('click', openTrackModal);
+    MODAL_CLOSE_BTN?.addEventListener('click', closeTrackModal);
+    SUBMIT_TRACK_BTN?.addEventListener('click', handleSubmitTrack);
     window.addEventListener('click', (event) => {
         if (event.target === TRACK_MODAL) {
             closeTrackModal();
@@ -270,7 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Search handler
-    SEARCH_INPUT.addEventListener('keyup', (e) => {
+    SEARCH_INPUT?.addEventListener('keyup', (e) => {
         const value = e.target.value.trim();
         if (e.key === 'Enter' && value) {
             handleTrackSearch(value);
@@ -279,8 +323,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Delete track handler (event delegation)
-    PARCELS_LIST.addEventListener('click', async (e) => {
+    // Delete track handler
+    PARCELS_LIST?.addEventListener('click', async (e) => {
         if (e.target.classList.contains('delete-btn')) {
             const trackNumber = e.target.dataset.track;
             if (!confirm(`Вы уверены, что хотите удалить трек ${trackNumber} из списка?`)) return;
@@ -302,7 +346,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     
     // Refresh button
-    REFRESH_BTN.addEventListener("click", () => { 
+    REFRESH_BTN?.addEventListener("click", () => { 
         loadUserTracks();
     });
     
@@ -324,6 +368,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
 // === CHANGE PASSWORD FUNCTIONALITY ===
 document.getElementById('change-password-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -364,6 +409,9 @@ document.getElementById('change-password-form')?.addEventListener('submit', asyn
         
         const response = await authFetch('/api/auth/change-password', {
             method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${AUTH_TOKEN}`
+            },
             body: formData
         });
         
@@ -407,9 +455,3 @@ document.getElementById('changePasswordModal')?.addEventListener('hidden.bs.moda
     document.getElementById('change-password-form').reset();
     document.getElementById('password-alert-container').innerHTML = '';
 });
-
-// Update user name in header
-const userNameElement = document.getElementById('user-name');
-if (userNameElement && USER_DATA.name) {
-    userNameElement.textContent = USER_DATA.name;
-}

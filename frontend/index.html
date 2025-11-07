@@ -33,7 +33,7 @@
                     <span class="user-link" id="user-name">Пользователь</span>
                     <button class="btn btn-sm btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#changePasswordModal" title="Сменить пароль">
                         🔐
-                    </button>
+                    </button>if (response.ok) {
                     <a href="#" class="user-link logout">Выход</a>
                 </div>
 
@@ -144,15 +144,38 @@
     </footer>
     
     <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ДОБАВЛЕНИЯ ТРЕКА -->
+   <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ДОБАВЛЕНИЯ ТРЕКА -->
     <div id="track-modal" class="custom-modal" style="display:none;">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
             <h4 class="modal-title">Добавить трек</h4>
-            <input type="text" class="form-control mb-3" id="track-number-input" placeholder="Введите трек-номер" required>
+            
+            <input 
+                type="text" 
+                class="form-control mb-3" 
+                id="track-number-input" 
+                placeholder="Введите трек-номер *" 
+                required
+                minlength="3"
+            >
+            
+            <textarea 
+                class="form-control mb-3" 
+                id="track-description-input" 
+                placeholder="Описание посылки (необязательно)" 
+                rows="3"
+                maxlength="500"
+            ></textarea>
+            
+            <small class="text-muted d-block mb-3">
+                * Минимум 3 символа для трек-номера
+            </small>
+            
             <p id="modal-message" class="text-danger"></p>
             <button class="btn btn-success w-100" id="submit-track-btn">Добавить</button>
         </div>
     </div>
+
 
     <!-- Файл JavaScript должен быть в папке /static/ -->
     <script src="/static/main.js" type="module"></script>

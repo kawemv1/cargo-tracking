@@ -17,4 +17,4 @@ python -m backend.init_db
 
 $env:DATABASE_URL="mysql+pymysql://freedb_kazkans:B72%23%24mh%25mSTje@sql.freedb.tech:3306/freedb_cargotest"
 uvicorn backend.main:app --reload
-
+python -m backend.init_db

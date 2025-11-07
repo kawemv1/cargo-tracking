@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История треков - DELTA CARGO</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- DataTables -->
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        /* Header like testflow.kz */
+        .site-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .site-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .site-logo:hover {
+            color: white;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-link:hover {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .telegram-link {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .logout-link {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Top banner like testflow.kz */
+        .top-banner {
+            background: #e8f5e9;
+            padding: 10px 0;
+            text-align: center;
+            border-bottom: 1px solid #c8e6c9;
+        }
+
+        .top-banner a {
+            color: #2e7d32;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .top-banner a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main content */
+        .main-content {
+            padding: 30px 0;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .breadcrumb-item a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* Search box */
+        .search-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-btn {
+            background: #667eea;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .search-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Results info */
+        .results-info {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Table card */
+        .table-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead {
+            background: #f8f9fa;
+        }
+
+        .table thead th {
+            border: none;
+            font-weight: 600;
+            color: #555;
+            padding: 15px;
+        }
+
+        .table tbody td {
+            padding: 15px;
+            vertical-align: middle;
+            border-color: #f0f0f0;
+        }
+
+        .track-id {
+            background: #e3f2fd;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: 600;
+            color: #1976d2;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .status-warehouse {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .status-delivered {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-transit {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .history-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .history-btn:hover {
+            background: #138496;
+            transform: scale(1.05);
+        }
+
+        /* Pagination like testflow.kz */
+        .pagination {
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .page-link {
+            border: 1px solid #e0e0e0;
+            color: #667eea;
+            margin: 0 3px;
+            border-radius: 6px;
+        }
+
+        .page-link:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .page-item.active .page-link {
+            background: #667eea;
+            border-color: #667eea;
+        }
+
+        /* Footer */
+        .site-footer {
+            background: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            margin-top: 50px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Banner -->
+    <div class="top-banner">
+        Если Вы хотите сайт для своего КАРГО, напишите нам на: 
+        <a href="https://t.me/beysenly" target="_blank">Telegram @beysenly</a>
+    </div>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/superadmin" class="site-logo">
+                    <span class="logo-icon">🚚</span>
+                    <span>DELTA CARGO</span>
+                </a>
+                <div class="header-actions">
+                    <a href="/superadmin" class="header-link">
+                        🏠 Панель управления
+                    </a>
+                    <a href="/audit-logs" class="header-link">
+                        📋 Журнал действий
+                    </a>
+                    <a href="https://t.me/beysenly" target="_blank" class="header-link telegram-link">
+                        📱 Telegram
+                    </a>
+                    <span class="header-link" id="admin-name">Super Admin</span>
+                    <a href="#" class="header-link logout-link logout">
+                        Выйти ➔
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/superadmin">Главная</a></li>
+                    <li class="breadcrumb-item active">История</li>
+                </ol>
+            </nav>
+
+            <!-- Page Title -->
+            <h1 class="page-title">История треков</h1>
+
+            <!-- Search Box -->
+            <div class="search-box">
+                <form id="search-form" class="row g-3">
+                    <div class="col-md-9">
+                        <input type="text" 
+                               class="form-control search-input" 
+                               id="search-input"
+                               placeholder="Поиск по трек-коду">
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn search-btn w-100">Найти</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Results Info -->
+            <div class="results-info">
+                Показано <strong id="results-count">0</strong> из <strong id="total-count">0</strong> результатов
+            </div>
+
+            <!-- Tracks Table -->
+            <div class="table-card">
+                <table class="table table-hover" id="tracks-table">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th>Трек</th>
+                            <th>Состояние</th>
+                            <th>Дата и время создания</th>
+                            <th>Дата создания</th>
+                            <th>Подробнее</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tracks-tbody">
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Загрузка...</span>
+                                </div>
+                                <p class="mt-2 text-muted">Загрузка треков...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <nav>
+                <ul class="pagination" id="pagination">
+                    <!-- Will be populated by JavaScript -->
+                </ul>
+            </nav>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <p class="mb-0">DELTA CARGO © 2025 | Track History System v1.0</p>
+        </div>
+    </footer>
+
+    <!-- Track Details Modal -->
+    <div class="modal fade" id="trackModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">История трека</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    Загрузка...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="/static/track-history.js"></script>
+</body>
+</html>
