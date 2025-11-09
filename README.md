@@ -1,103 +1,127 @@
-# 🚚 Cargo Tracking System
+<div id="top">
 
-> **Real-time cargo monitoring and delivery management dashboard**  
-> Track shipments, manage delivery statuses, and visualize logistics operations efficiently.
+<p align="center">
+  <img src="https://cdn-icons-png.flaticon.com/512/942/942751.png" alt="Cargo Logo" width="20%" style="border-radius:15px;">
+</p>
 
-![GitHub last commit](https://img.shields.io/github/last-commit/kawemv1/cargo-tracking?color=blue)
-![Python](https://img.shields.io/badge/Python-3.10+-yellow?logo=python)
-![Framework](https://img.shields.io/badge/Framework-FastAPI%20%7C%20Streamlit-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
-![Status](https://img.shields.io/badge/Status-Active-success)
+<h1 align="center">🚚 Cargo Tracking System</h1>
+<p align="center"><em>Real-time logistics and delivery tracking dashboard for modern supply chains.</em></p>
 
----
+<p align="center">
+  <a href="https://github.com/kawemv1/cargo-tracking">
+    <img src="https://img.shields.io/github/last-commit/kawemv1/cargo-tracking?logo=github&color=blue" alt="Last Commit">
+  </a>
+  <a href="https://www.python.org/">
+    <img src="https://img.shields.io/badge/Python-3.10+-yellow?logo=python" alt="Python Version">
+  </a>
+  <a href="https://fastapi.tiangolo.com/">
+    <img src="https://img.shields.io/badge/FastAPI%20%7C%20Streamlit-blue?logo=fastapi&logoColor=white" alt="Framework">
+  </a>
+  <a href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/License-MIT-green?logo=opensourceinitiative" alt="MIT License">
+  </a>
+</p>
 
-## ✨ Overview
-**Cargo Tracking System** is a logistics management web app built to make shipment tracking simple and transparent.  
-Users can register cargo, update its status, and monitor progress across multiple destinations — all through a unified dashboard.
+<img src="https://raw.githubusercontent.com/eli64s/readme-ai/main/docs/docs/assets/svg/line-gradient.svg" width="100%" height="3px">
+
+## 📘 Quick Links
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Quick Start](#quick-start)
+- [Project Structure](#project-structure)
+- [Example Shipment](#example-shipment)
+- [Future Improvements](#future-improvements)
+- [Author](#author)
+- [License](#license)
+
+<img src="https://raw.githubusercontent.com/eli64s/readme-ai/main/docs/docs/assets/svg/line-gradient.svg" width="100%" height="3px">
+
+## 🧭 Overview
+The **Cargo Tracking System** is a web-based logistics management platform that allows users to register shipments, monitor delivery status, and visualize routes.  
+It combines **FastAPI** (backend) and **Streamlit** (frontend) for a clean, modern, and interactive experience.
 
 ---
 
 ## ⚙️ Features
-- 📦 **Add and track shipments** — each with ID, route, and cargo info  
-- 🚛 **Real-time status updates** — In Transit, Delivered, Delayed  
-- 🌍 **Route visualization** — simple map interface for viewing cargo paths  
-- 📅 **Delivery timeline view** — manual or scheduled updates  
-- 👥 **User roles** — for clients, managers, and drivers  
-- 🖥️ **Web interface** — built with Streamlit or FastAPI templates  
+- 📦 Register and track shipments with unique IDs  
+- 🚛 Update delivery status — In Transit / Delivered / Delayed  
+- 🌍 Visualize cargo routes and destinations  
+- 📅 Manage and schedule delivery timelines  
+- 👥 Role-based access for managers, drivers, and clients  
+- 🖥️ User-friendly dashboard with data insights  
 
 ---
 
 ## 🧩 Tech Stack
 | Layer | Technology |
 |-------|-------------|
-| **Backend** | FastAPI / Flask |
-| **Frontend** | Streamlit / HTML / CSS / JS |
+| **Backend** | FastAPI |
+| **Frontend** | Streamlit |
 | **Database** | SQLite / PostgreSQL |
-| **Visualization** | Folium / Mapbox (optional) |
+| **Visualization** | Folium / Mapbox |
 | **Deployment** | Streamlit Cloud / Render / Docker |
 
 ---
 
 ## 🚀 Quick Start
+
 ```bash
+# Clone the repository
 git clone https://github.com/kawemv1/cargo-tracking.git
 cd cargo-tracking
+
+# Install dependencies
 pip install -r requirements.txt
-Run the web app:
 
-bash
-Copy code
+# ▶ Run the Streamlit dashboard
 streamlit run app/app.py
-Or start the backend API:
 
-bash
-Copy code
+# ▶ Or start the FastAPI backend
 uvicorn backend.main:app --reload
-🗂️ Project Structure
-bash
-Copy code
-cargo-tracking/
-│
-├─ app/
-│   ├─ app.py            # Streamlit dashboard UI
-│   ├─ components/       # UI components
-│
-├─ backend/
-│   ├─ main.py           # FastAPI entry point
-│   ├─ routes.py         # API endpoints
-│   ├─ models.py         # Database models
-│
-├─ data/
-│   ├─ cargo_records.db  # SQLite database
-│   └─ sample_data.csv
-│
-├─ requirements.txt
-└─ README.md
-📋 Example Cargo Record
-Field	Example
-Cargo ID	CARGO-A101
-Origin	Almaty
-Destination	Astana
-Weight	2.3 tons
-Status	In Transit
-Last Updated	2025-11-09 15:30
 
-🔮 Future Improvements
-🛰️ GPS integration for live cargo tracking
+# ⏹ To stop the server:
+# Press CTRL + C
+```
+---
 
-📱 Mobile-friendly interface
+## 📂 Project Structure
 
-💬 Telegram or WhatsApp delivery notifications
+cargo-tracking/  
+├── app/              # Streamlit dashboard  
+├── backend/          # FastAPI routes & models  
+├── data/             # SQLite DB, sample_data.csv  
+├── requirements.txt  
+└── README.md
 
-📈 Export delivery reports (Excel / PDF)
 
-👩‍💻 Author
-@kawemv1
-Building practical and efficient logistics tools with Python and modern web frameworks.
-📧 Email: kawemv1.dev@gmail.com
+---
 
-📜 License
-Licensed under the MIT License — free to use and modify.
+## 📦 Example Shipment
+| Cargo ID  | Origin | Destination | Weight | Status | Last Updated |
+|------------|---------|--------------|---------|------------|---------------|
+| CARGO-A101 | Almaty | Astana | 2.3t | In Transit | 2025-11-09 15:30 |
 
-⭐ If you find this project helpful, please give it a star!
-👉 View on GitHub
+---
+
+## 🔮 Future Improvements
+- 🛰️ GPS-based live cargo tracking  
+- 📱 Mobile-optimized dashboard  
+- 💬 Telegram & WhatsApp notifications  
+- 📈 Export reports (Excel / PDF)  
+
+---
+
+## 👨‍💻 Author
+**[@kawemv1](https://github.com/kawemv1)**  
+Building efficient logistics & automation tools with Python and web frameworks.  
+📧 **Email:** kawemv1.dev@gmail.com  
+
+---
+
+## 📜 License
+Licensed under the **MIT License** — free to use and modify.  
+⭐ **If you find this project helpful, please give it a star!**
+
+<img src="https://raw.githubusercontent.com/eli64s/readme-ai/main/docs/docs/assets/svg/line-gradient.svg" width="100%" height="3px">  
+</div>
