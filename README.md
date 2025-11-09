@@ -12,14 +12,12 @@
 ---
 
 ## ✨ Overview
-
 **Cargo Tracking System** is a logistics management web app built to make shipment tracking simple and transparent.  
 Users can register cargo, update its status, and monitor progress across multiple destinations — all through a unified dashboard.
 
 ---
 
 ## ⚙️ Features
-
 - 📦 **Add and track shipments** — each with ID, route, and cargo info  
 - 🚛 **Real-time status updates** — In Transit, Delivered, Delayed  
 - 🌍 **Route visualization** — simple map interface for viewing cargo paths  
@@ -30,7 +28,6 @@ Users can register cargo, update its status, and monitor progress across multipl
 ---
 
 ## 🧩 Tech Stack
-
 | Layer | Technology |
 |-------|-------------|
 | **Backend** | FastAPI / Flask |
@@ -42,17 +39,23 @@ Users can register cargo, update its status, and monitor progress across multipl
 ---
 
 ## 🚀 Quick Start
-
-Clone and install dependencies:
 ```bash
 git clone https://github.com/kawemv1/cargo-tracking.git
 cd cargo-tracking
 pip install -r requirements.txt
-# Run the web app:
+Run the web app:
+
+bash
+Copy code
 streamlit run app/app.py
-# Or start the backend API:
+Or start the backend API:
+
+bash
+Copy code
 uvicorn backend.main:app --reload
-# 🗂️ Project Structure:
+🗂️ Project Structure
+bash
+Copy code
 cargo-tracking/
 │
 ├─ app/
@@ -70,7 +73,7 @@ cargo-tracking/
 │
 ├─ requirements.txt
 └─ README.md
-# 📋 Example Cargo Record:
+📋 Example Cargo Record
 Field	Example
 Cargo ID	CARGO-A101
 Origin	Almaty
@@ -78,8 +81,8 @@ Destination	Astana
 Weight	2.3 tons
 Status	In Transit
 Last Updated	2025-11-09 15:30
-# 🔮 Future Improvements
 
+🔮 Future Improvements
 🛰️ GPS integration for live cargo tracking
 
 📱 Mobile-friendly interface
@@ -88,13 +91,13 @@ Last Updated	2025-11-09 15:30
 
 📈 Export delivery reports (Excel / PDF)
 
-# 👩‍💻 Author
-
+👩‍💻 Author
 @kawemv1
-
 Building practical and efficient logistics tools with Python and modern web frameworks.
-📧 Email: ansarkairzhan1@gmail.com
+📧 Email: kawemv1.dev@gmail.com
 
 📜 License
-
 Licensed under the MIT License — free to use and modify.
+
+⭐ If you find this project helpful, please give it a star!
+👉 View on GitHub
