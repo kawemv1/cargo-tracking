@@ -1,210 +1,100 @@
-# 🚚 Cargo Tracking System (AI + Web Dashboard)
+# 🚚 Cargo Tracking System
 
-> **Smart. Real-Time. Transparent.**  
-> Track cargo, monitor delivery routes, and predict delays — all in one intelligent system.
+> **Real-time cargo monitoring and delivery management dashboard**  
+> Track shipments, manage delivery statuses, and visualize logistics operations efficiently.
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/kawemv1/cargo-tracking?color=blue)
 ![Python](https://img.shields.io/badge/Python-3.10+-yellow?logo=python)
+![Framework](https://img.shields.io/badge/Framework-FastAPI%20%7C%20Streamlit-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
-![Streamlit](https://img.shields.io/badge/Streamlit-App-red?logo=streamlit)
-![AI](https://img.shields.io/badge/AI-Enabled-purple?logo=tensorflow)
-![Status](https://img.shields.io/badge/Status-Active-success?style=flat-square)
+![Status](https://img.shields.io/badge/Status-Active-success)
 
 ---
 
-## ✨ Project Overview
+## ✨ Overview
 
-**Cargo Tracking System** is a machine-learning–powered logistics solution built to monitor, analyze, and optimize cargo delivery operations in real-time.
-
-The platform provides:
-- 📍 **Live tracking** of shipments and routes  
-- ⏱️ **Delivery time prediction** using ML regression  
-- ⚙️ **Cargo status management** (in-transit, delayed, delivered)  
-- 🛰️ **Map-based visualization** of routes & locations  
-- 📊 **Data analytics dashboard** for performance insights  
+**Cargo Tracking System** is a logistics management web app built to make shipment tracking simple and transparent.  
+Users can register cargo, update its status, and monitor progress across multiple destinations — all through a unified dashboard.
 
 ---
 
-## 🌍 Why This Project?
+## ⚙️ Features
 
-In modern logistics, **visibility = efficiency**.  
-Traditional tracking systems often lack:
-- Intelligent delay prediction 🧠  
-- Integrated route analytics 🗺️  
-- User-friendly dashboards 📈  
-
-This system solves all of that — combining **machine learning**, **geospatial data**, and **interactive visualization** to deliver a truly modern cargo management experience.
-
----
-
-## 🧠 Key Features
-
-| Category | Description |
-|-----------|--------------|
-| **🚛 Real-time Tracking** | Monitor cargo location using GPS coordinates or simulated data. |
-| **📆 Delivery ETA Prediction** | Predict estimated delivery time using historical data (trained ML model). |
-| **📦 Cargo Lifecycle Management** | Automatically update cargo status based on progress. |
-| **🌐 Interactive Map Dashboard** | Mapbox/Leaflet integration for visual route tracking. |
-| **📊 Analytics Panel** | See top-performing routes, delivery speed, and delay frequency. |
-| **⚡ Lightweight Backend** | Powered by FastAPI + SQLite/Postgres for speed and simplicity. |
-| **🖥️ Streamlit Web App** | For managers and clients to view tracking data intuitively. |
+- 📦 **Add and track shipments** — each with ID, route, and cargo info  
+- 🚛 **Real-time status updates** — In Transit, Delivered, Delayed  
+- 🌍 **Route visualization** — simple map interface for viewing cargo paths  
+- 📅 **Delivery timeline view** — manual or scheduled updates  
+- 👥 **User roles** — for clients, managers, and drivers  
+- 🖥️ **Web interface** — built with Streamlit or FastAPI templates  
 
 ---
 
-## 🖼️ System Architecture
+## 🧩 Tech Stack
 
-```text
-                   ┌────────────────────┐
-                   │   User Interface   │
-                   │ (Streamlit / Web)  │
-                   └─────────┬──────────┘
-                             │
-                             ▼
-                 ┌────────────────────┐
-                 │   REST API Layer   │
-                 │   (FastAPI / Flask)│
-                 └─────────┬──────────┘
-                             │
-                             ▼
-                 ┌────────────────────┐
-                 │   ML Model Engine  │
-                 │ (Delay Prediction) │
-                 └─────────┬──────────┘
-                             │
-                             ▼
-                 ┌────────────────────┐
-                 │ Database / Storage │
-                 │ (Postgres / SQLite)│
-                 └────────────────────┘
-🧩 Tech Stack
-Layer	Technology
-Frontend	Streamlit / React / Tailwind (optional)
-Backend	FastAPI / Flask
-Database	SQLite / PostgreSQL
-Machine Learning	CatBoost, Scikit-Learn
-Visualization	Plotly, Folium, Mapbox, Seaborn
-Deployment	Streamlit Cloud / Render / Docker
-📦 Example Usage
-🚀 Predict Delivery ETA
-from catboost import CatBoostRegressor
-import pandas as pd
+| Layer | Technology |
+|-------|-------------|
+| **Backend** | FastAPI / Flask |
+| **Frontend** | Streamlit / HTML / CSS / JS |
+| **Database** | SQLite / PostgreSQL |
+| **Visualization** | Folium / Mapbox (optional) |
+| **Deployment** | Streamlit Cloud / Render / Docker |
 
-# Load trained model
-model = CatBoostRegressor().load_model("models/delivery_eta_model.cbm")
+---
 
-# Example cargo record
-cargo = pd.DataFrame([{
-    'distance_km': 450,
-    'vehicle_type': 'Truck',
-    'weather': 'Clear',
-    'road_condition': 'Highway',
-    'cargo_weight': 2.5,  # tons
-}])
+## 🚀 Quick Start
 
-eta_hours = model.predict(cargo)[0]
-print(f"⏱️ Estimated Delivery Time: {eta_hours:.2f} hours")
-
-🗺️ Example Streamlit Interface
-import streamlit as st
-import pandas as pd
-
-st.title("🚚 Cargo Tracking Dashboard")
-city = st.selectbox("Select Destination City", ["Astana", "Almaty", "Shymkent"])
-distance = st.slider("Distance (km)", 10, 2000, 450)
-cargo_type = st.selectbox("Cargo Type", ["Standard", "Fragile", "Perishable"])
-
-if st.button("Predict Delivery Time"):
-    st.success(f"Predicted ETA: 8.5 hours to {city}")
-
-📊 Model Performance (Example)
-Metric	Value
-R² Score	0.91
-MAE	1.4 hours
-RMSE	2.3 hours
-Training Data Size	5,000 records
-Model Type	CatBoost Regressor
-⚙️ Installation
+Clone and install dependencies:
+```bash
 git clone https://github.com/kawemv1/cargo-tracking.git
 cd cargo-tracking
 pip install -r requirements.txt
-
-
-Run the dashboard:
-
+# Run the web app:
 streamlit run app/app.py
-
-🧰 Project Structure
+# Or start the backend API:
+uvicorn backend.main:app --reload
+# 🗂️ Project Structure:
 cargo-tracking/
 │
 ├─ app/
-│   ├─ app.py               # Streamlit dashboard
-│   ├─ map_utils.py         # Map functions for routes
-│   ├─ api_client.py        # Connects to backend API
+│   ├─ app.py            # Streamlit dashboard UI
+│   ├─ components/       # UI components
 │
 ├─ backend/
-│   ├─ main.py              # FastAPI backend
-│   ├─ models/              # ML models for ETA prediction
-│   └─ database.py
+│   ├─ main.py           # FastAPI entry point
+│   ├─ routes.py         # API endpoints
+│   ├─ models.py         # Database models
 │
 ├─ data/
-│   ├─ deliveries.csv       # Sample dataset
-│   └─ routes.json
-│
-├─ notebooks/
-│   ├─ model_training.ipynb
-│   ├─ eda.ipynb
+│   ├─ cargo_records.db  # SQLite database
+│   └─ sample_data.csv
 │
 ├─ requirements.txt
 └─ README.md
+# 📋 Example Cargo Record:
+Field	Example
+Cargo ID	CARGO-A101
+Origin	Almaty
+Destination	Astana
+Weight	2.3 tons
+Status	In Transit
+Last Updated	2025-11-09 15:30
+# 🔮 Future Improvements
 
-🧭 Future Roadmap
+🛰️ GPS integration for live cargo tracking
 
- 🛰️ GPS integration for real cargo coordinates
+📱 Mobile-friendly interface
 
- 📱 Mobile-friendly interface for drivers
+💬 Telegram or WhatsApp delivery notifications
 
- ⚙️ Automatic anomaly detection (delays, reroutes)
+📈 Export delivery reports (Excel / PDF)
 
- 🧩 AI-powered route optimization
-
- 💬 Telegram/WhatsApp cargo status notifications
-
- ☁️ Cloud-based analytics dashboard
-
-💡 Example Dataset Fields
-Column	Description
-cargo_id	Unique cargo shipment ID
-origin_city	Starting point
-destination_city	Delivery destination
-distance_km	Total route distance
-vehicle_type	Truck, Van, Rail, etc.
-cargo_weight	Weight in tons
-departure_time	Date/time of dispatch
-arrival_time	Actual delivery time
-delay_hours	Calculated delay
-status	Delivered / In transit / Delayed
-🌐 Deployment Options
-
-🌍 Streamlit Cloud: easiest for testing
-
-🐳 Docker Compose: scalable multi-container setup
-
-☁️ Render / Railway: free hosting for API + dashboard
-
-🔐 Firebase / Supabase: for storing real tracking data
-
-🧑‍💻 Author
+# 👩‍💻 Author
 
 @kawemv1
 
-Building intelligent logistics solutions powered by data, automation, and AI.
-
-📧 Contact: kawemv1.dev@gmail.com
-
-🌍 GitHub: https://github.com/kawemv1
+Building practical and efficient logistics tools with Python and modern web frameworks.
+📧 Email: ansarkairzhan1@gmail.com
 
 📜 License
 
-Released under the MIT License
-.
-Free to use, modify, and deploy for educational or commercial purposes.
+Licensed under the MIT License — free to use and modify.
